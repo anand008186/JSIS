@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Import for the logout icon
 
-export default function EmployeeHomePage({ setCurrentPage }: { setCurrentPage: (page: string) => void }) {
+export default function EmployeeHomePage() {
   const handleLogout = () => {
     Alert.alert(
       "Confirm Logout",
@@ -13,7 +13,7 @@ export default function EmployeeHomePage({ setCurrentPage }: { setCurrentPage: (
           onPress: () => console.log("Logout cancelled"),
           style: "cancel"
         },
-        { text: "Logout", onPress: () => setCurrentPage('Main') }
+        { text: "Logout", onPress: () => console.log("Logout") }
       ],
       { cancelable: false }
     );
@@ -32,10 +32,10 @@ export default function EmployeeHomePage({ setCurrentPage }: { setCurrentPage: (
         </TouchableOpacity>
       </View>
       <View style={styles.content}>
-        <TouchableOpacity style={styles.button} onPress={() => setCurrentPage('RaisePermit')}>
+        <TouchableOpacity style={styles.button} >
           <Text style={styles.buttonText}>Raise a Permit</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => setCurrentPage('EmployeeHistory')}>
+        <TouchableOpacity style={styles.button} >
           <Text style={styles.buttonText}>History</Text>
         </TouchableOpacity>
       </View>

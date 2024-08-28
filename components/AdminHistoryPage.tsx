@@ -4,11 +4,11 @@ import { AppContext, AppContextProps } from '@/context/AppContext';
 
 export default function AdminHistoryPage() {
 
-  const { employeeHistory } = React.useContext(AppContext) as AppContextProps;
+  const { adminRequests } = React.useContext(AppContext) as AppContextProps;
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Admin History</Text>
-      {employeeHistory.filter((form) => form.status).map((form, index) => (
+      {adminRequests.filter((form) => form.status).map((form, index) => (
         <View key={index} style={styles.formItem}>
           <Text>{`Form ${index + 1}`}</Text>
           <Text>{form.field1}</Text>

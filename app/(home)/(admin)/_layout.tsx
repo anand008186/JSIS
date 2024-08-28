@@ -27,7 +27,7 @@ export default function AdminLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+   
       <Stack 
       screenOptions={
         {
@@ -36,10 +36,8 @@ export default function AdminLayout() {
       }
 
       >
-        <Stack.Screen name="+not-found" />
-        <Stack.Screen name="index" 
-         />
+        <Stack.Screen name="index"  />
+        <Stack.Screen name="request" />
       </Stack>
-    </ThemeProvider>
   );
 }

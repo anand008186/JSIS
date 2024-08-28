@@ -1,15 +1,26 @@
-import React from 'react';
+import { Link, useRouter } from 'expo-router';
+import React, { useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 export default function MainPage() {
+  const router = useRouter();
+
+useEffect(() => {
+  console.log('MainPage mounted');
+  return () => {
+    console.log('MainPage unmounted');
+  };
+}
+, []);
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Welcome to JSIS</Text>
-      <TouchableOpacity style={styles.button} >
+      <TouchableOpacity style={styles.button}  onPress={()=> router.navigate("/(auth)/employee")}  >
         <Text style={styles.buttonText}>Login as Employee</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} >
-        <Text style={styles.buttonText}>Login as Admin</Text>
+    </TouchableOpacity >
+    
+      <TouchableOpacity style={styles.button} onPress={()=> router.navigate("/(auth)/admin")} >
+      <Text style={styles.buttonText}>Login as Admin</Text>
       </TouchableOpacity>
     </View>
   );
@@ -37,6 +48,7 @@ const styles = StyleSheet.create({
     width: '70%', // Button width relative to the container
     alignItems: 'center', // Center text inside button
   },
+  link: {},
   buttonText: {
     color: '#fff', // White text color
     fontSize: 14,

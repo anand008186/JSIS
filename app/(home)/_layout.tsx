@@ -1,45 +1,26 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
-import MainPage from '@/components/MainPage';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { StyleSheet, Text, View } from 'react-native'
+import React from 'react'
+import { AppContext ,AppContextProps} from '@/context/AppContext'
+import { Stack } from 'expo-router'
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+const Home = () => {
 
-export default function HomeLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
-
+    const {role} = React.useContext(AppContext) as AppContextProps
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack 
-      screenOptions={
-        {
-          headerShown: false,
-        }
-      }
-
-      >
-        <Stack.Screen name="+not-found" />
-        <Stack.Screen name="index" 
-         />
-      </Stack>
-    </ThemeProvider>
-  );
+  <Stack 
+  screenOptions={
+    {
+      headerShown: false
+    }
+  }
+  >
+    {
+      role == 'admin' ? <Stack.Screen name="(admin)" /> : <Stack.Screen name="(employee)" />
+    }
+</Stack>
+  )
 }
+
+export default Home
+
+const styles = StyleSheet.create({})

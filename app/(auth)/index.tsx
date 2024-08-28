@@ -1,9 +1,15 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Stack } from 'expo-router'
 import MainPage from '@/components/MainPage'
 
 const index = () => {
+
+  useEffect(() => {
+    console.log('auth index')
+  }
+  , [])
+
   return (
   <MainPage />
   )

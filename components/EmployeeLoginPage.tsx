@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Import for the back arrow icon
 import { handleEmployeeLogin } from '@/api/firebaseApi';
+import { Link, useRouter } from 'expo-router';
 export default function EmployeeLoginPage() {  
   const [employeeId, setLocalEmployeeId] = useState('');
   const [password, setLocalPassword] = useState('');
   const [error, setError] = useState('');
-
+const router = useRouter();
   const handleLogin = async () => {
     if (!employeeId || !password) {
       setError('All fields are required');
@@ -26,8 +27,8 @@ export default function EmployeeLoginPage() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity >
-          <Ionicons name="arrow-back" size={24} color="black" />
+        <TouchableOpacity onPress={()=> router.dismiss(1) } >
+        <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
         <Text style={styles.title}>Employee Login</Text>
       </View>

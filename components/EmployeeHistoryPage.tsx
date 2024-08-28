@@ -1,18 +1,22 @@
 import React from 'react';
 import { ScrollView, Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Import for the back icon
+import { AppContext,AppContextProps } from '@/context/AppContext';
+export default function EmployeeHistoryPage() {
 
-export default function EmployeeHistoryPage({ forms, goBack }: { forms: any[], goBack: () => void }) {
+  const { employeeHistory } = React.useContext(AppContext) as AppContextProps;
+
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={goBack}>
+        <TouchableOpacity >
           <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
         <Text style={styles.title}>Employee History</Text>
       </View>
       <ScrollView style={styles.content}>
-        {forms.map((form, index) => (
+        {employeeHistory.map((form, index) => (
           <View key={index} style={styles.formItem}>
             <Text>{`Form ${index + 1}`}</Text>
             <Text>{form.field1}</Text>

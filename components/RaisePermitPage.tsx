@@ -2,9 +2,28 @@ import React, { useState } from 'react';
 import { ScrollView, Text, TextInput, TouchableOpacity, StyleSheet, View, Alert } from 'react-native';
 import CheckBox from 'react-native-check-box';
 import { Ionicons } from '@expo/vector-icons'; // Import for the back arrow icon
-
-export default function RaisePermitPage({ formDetails, setFormDetails, handleFormSubmit, setCurrentPage }: { formDetails: any, setFormDetails: any, handleFormSubmit: any, setCurrentPage: (page: string) => void }) {
+import { AppContext } from '@/context/AppContext';
+import { handleSubmitForm } from '@/api/firebaseApi';
+export default function RaisePermitPage() {
   const [errors, setErrors] = useState<any>({});
+
+  
+
+  const [formDetails, setFormDetails] = useState({
+    name: '',
+    department: '',
+    employeeId: '',
+    email: '',
+    phoneNumber: '',
+    address: '',
+    city: '',
+    state: '',
+    zipCode: '',
+    country: '',
+    checkbox1: false,
+    checkbox2: false,
+  });
+
 
   const validateForm = () => {
     let valid = true;
@@ -38,7 +57,7 @@ export default function RaisePermitPage({ formDetails, setFormDetails, handleFor
 
   const onSubmit = () => {
     if (validateForm()) {
-      handleFormSubmit();
+     handleSubmitForm(formDetails);
     } else {
       Alert.alert('Validation Error', 'Please fill all required fields.');
     }
@@ -47,7 +66,7 @@ export default function RaisePermitPage({ formDetails, setFormDetails, handleFor
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => setCurrentPage("EmployeeHome")}>
+        <TouchableOpacity >
           <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
         <Text style={styles.title}>Raise a Permit</Text>

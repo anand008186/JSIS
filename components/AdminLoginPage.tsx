@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Import for the back arrow icon
+import { useRouter } from 'expo-router';
 
 export default function AdminLoginPage() {
   const [employeeId, setLocalEmployeeId] = useState('');
   const [password, setLocalPassword] = useState('');
   const [error, setError] = useState('');
+  const router = useRouter();
 
   const handleLogin = () => {
     if (!employeeId || !password) {
@@ -19,7 +21,7 @@ export default function AdminLoginPage() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity >
+        <TouchableOpacity onPress={()=> router.dismiss(1)} >
           <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
         <Text style={styles.title}>Admin Login</Text>
@@ -51,7 +53,8 @@ export default function AdminLoginPage() {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 32, // Space between the top of the screen and the container
+    paddingTop: 32,
+    // Space between the top of the screen and the container
     flex: 1,
     backgroundColor: '#E0F7FA', // Light blue background color
   },
