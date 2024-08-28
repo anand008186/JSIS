@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import AdminHistoryPage from '@/components/AdminHistoryPage'
+import AdminRequestPage from '@/components/AdminRequestPage'
 
 const AdminRequest = () => {
   return (
-    <AdminHistoryPage />
+   <AdminRequestPage/>
   )
 }
 

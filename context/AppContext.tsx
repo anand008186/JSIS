@@ -15,8 +15,6 @@ export interface AppContextProps {
   fetchAdminRequests: () => Promise<void>;
 }
 
-
-
 export const AppContext = createContext<AppContextProps | undefined>(undefined);
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
@@ -46,23 +44,35 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
   const fetchUserRole = async () => {
     if (currentUser) {
-      const userDoc = await db.collection('EmployeeInfo').doc(currentUser.uid).get();
-      if (userDoc.exists) {
+      const userQuery = await db.collection('employees').where('email', '==', currentUser.email).get();
+      if (!userQuery.empty) {
+        const userDoc = userQuery.docs[0];
+        console.log('userDoc', userDoc);
         setRole(userDoc.data()?.role);
       }
     }
   };
 
   const fetchEmployeeHistory = async () => {
-    const querySnapshot = await db.collection('employeeHistory').get();
-    const data = querySnapshot.docs.map(doc => doc.data());
-    setEmployeeHistory(data);
+    if (currentUser) {
+      const querySnapshot = await db.collection('forms').where('userEmail', '==', currentUser.email).get();
+      const data = querySnapshot.docs.map(doc => doc.data());
+      setEmployeeHistory(data);
+    }
   };
 
   const fetchAdminRequests = async () => {
-    const querySnapshot = await db.collection('adminRequests').get();
-    const data = querySnapshot.docs.map(doc => doc.data());
-    setAdminRequests(data);
+    try {
+      const querySnapshot = await db.collection('forms').get();
+      console.log('querySnapshot', querySnapshot);
+      const data = querySnapshot.docs.map(doc => ({
+        id: doc.id, // Include the document ID
+        ...doc.data() 
+      }));
+     setAdminRequests(data);
+    } catch (error) {
+      console.error("Error fetching forms:", error);
+    }
   };
 
   return (

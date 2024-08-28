@@ -1,21 +1,49 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity,ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Import for the back arrow icon
 import { useRouter } from 'expo-router';
+import { handleAdminLogin } from '@/api/firebaseApi';
 
 export default function AdminLoginPage() {
   const [employeeId, setLocalEmployeeId] = useState('');
   const [password, setLocalPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleLogin = () => {
+  const handleLogin =  async() => {
     if (!employeeId || !password) {
       setError('Both fields are required');
       return;
     }
     setError('');
-
+  try {
+    setLoading(true);
+    await handleAdminLogin(employeeId,password)
+    setLoading(false);
+    router.push('/(admin)');
+  } catch (error:any) {
+    setLoading(false);
+    console.log(error)
+      switch (error.code) {
+      case 'auth/invalid-email':
+        setError("Invalid Credentials");
+        break;
+      case 'auth/user-disabled':
+        setError("User account has been disabled by an administrator.");
+        break;
+      case 'auth/user-not-found':
+        setError("Invalid Credentials");
+        break;
+      case 'auth/wrong-password':
+        setError("Invalid Credentials");
+        break;
+      default:
+        setError("Something went wrong. Please try again later.");
+        break;
+    }
+    
+  }
   };
 
   return (
@@ -46,6 +74,12 @@ export default function AdminLoginPage() {
         <TouchableOpacity style={styles.submitButton} onPress={handleLogin}>
           <Text style={styles.submitButtonText}>Submit</Text>
         </TouchableOpacity>
+
+        {loading && (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color="#00796B" />
+            </View>
+          )}
       </View>
     </View>
   );
@@ -96,5 +130,9 @@ const styles = StyleSheet.create({
     color: 'red',
     marginBottom: 16,
     textAlign: 'center',
+  },
+  loadingContainer: {
+    marginTop: 16,
+    alignItems: 'center',
   },
 });

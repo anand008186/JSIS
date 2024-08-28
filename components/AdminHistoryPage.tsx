@@ -1,36 +1,76 @@
-import React from 'react';
-import { ScrollView, Text, View, StyleSheet } from 'react-native';
+import React, { useEffect } from 'react';
+import { ScrollView, Text, View, StyleSheet,TouchableOpacity,ActivityIndicator } from 'react-native';
 import { AppContext, AppContextProps } from '@/context/AppContext';
+import { Ionicons } from '@expo/vector-icons'; // Import for the back icon
+import { useRouter } from 'expo-router';
 
 export default function AdminHistoryPage() {
+  const router = useRouter();
+  const { adminRequests,fetchAdminRequests} = React.useContext(AppContext) as AppContextProps;
+  const [loading, setLoading] = React.useState(false);
 
-  const { adminRequests } = React.useContext(AppContext) as AppContextProps;
+
+  useEffect(() => {
+    setLoading(true);
+    fetchAdminRequests();
+    setLoading(false);
+  }
+  , []);
+
+
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>Admin History</Text>
-      {adminRequests.filter((form) => form.status).map((form, index) => (
+    <View style={styles.container}>
+       <View style={styles.header}>
+        <TouchableOpacity onPress={()=> router.dismiss(1)} >
+          <Ionicons name="arrow-back" size={24} color="black" />
+        </TouchableOpacity>
+        <Text style={styles.title}>Permit Requests</Text>
+      </View>
+    <ScrollView style={styles.content}>
+    {adminRequests.filter((form) => form.status != "pending").map((form, index) => (
         <View key={index} style={styles.formItem}>
           <Text>{`Form ${index + 1}`}</Text>
-          <Text>{form.field1}</Text>
-          <Text>{form.field2}</Text>
-          <Text>{`Status: ${form.status}`}</Text>
+          <Text>{form.userEmail}</Text>
+          <Text>{form.createdAt}</Text>
+          <Text style={form.status === 'rejected' ? styles.rejected : styles.approved}>
+            {`Status: ${form.status}`}
+          </Text>
           {/* Display more fields as needed */}
         </View>
       ))}
+       {loading && (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color="#00796B" />
+            </View>
+          )}
+
     </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    backgroundColor: '#f5f5f5',
+    marginTop: 32,
+    backgroundColor: '#E0F7FA',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
   },
   title: {
+    paddingLeft: 16,
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 16,
+  },
+  content: {
+    flex: 1,
+    padding: 16,
   },
   formItem: {
     padding: 16,
@@ -39,5 +79,15 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     borderColor: '#ccc',
     borderWidth: 1,
+  },
+  rejected: {
+    color: 'red',
+  },
+  approved: {
+    color: 'green',
+  },
+  loadingContainer: {
+    marginTop: 16,
+    alignItems: 'center',
   },
 });

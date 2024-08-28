@@ -1,8 +1,13 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Import for the logout icon
-
+import { AppContext,AppContextProps } from '@/context/AppContext';
+import {  useRouter } from 'expo-router';
+import { truncateEmail } from '@/utils/helpFunc';
 export default function AdminHomePage() {
+  const router = useRouter();
+  const { logout,currentUser } = React.useContext(AppContext) as AppContextProps;
+
   const handleLogout = () => {
     Alert.alert(
       "Confirm Logout",
@@ -13,7 +18,10 @@ export default function AdminHomePage() {
           onPress: () => console.log("Logout cancelled"),
           style: "cancel"
         },
-        { text: "Logout", onPress: () => console.log("Logout") }
+        { text: "Logout", onPress: async() => {
+          await logout();
+          router.push("/(auth)")
+        }  }
       ],
       { cancelable: false }
     );
@@ -26,16 +34,16 @@ export default function AdminHomePage() {
           source={{ uri: 'https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png'  }} // Replace with actual profile picture URL
           style={styles.profilePic}
         />
-        <Text style={styles.title}>Admin Home</Text>
+        <Text style={styles.title}>Welcome {truncateEmail(currentUser?.email ?? "")}</Text>
         <TouchableOpacity onPress={handleLogout}>
           <Ionicons name="log-out-outline" size={24} color="black" />
         </TouchableOpacity>
       </View>
       <View style={styles.content}>
-        <TouchableOpacity style={styles.button} >
+        <TouchableOpacity style={styles.button} onPress={()=> router.navigate("/(home)/(admin)/request")} >
           <Text style={styles.buttonText}>Permit Requests</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} >
+        <TouchableOpacity style={styles.button} onPress={()=> router.navigate("/(home)/(admin)/history")} >
           <Text style={styles.buttonText}>History</Text>
         </TouchableOpacity>
       </View>
@@ -64,7 +72,7 @@ const styles = StyleSheet.create({
     marginRight: 16, // Space between the profile pic and the title
   },
   title: {
-    fontSize: 28,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#00796B', // Dark teal color for the title
     flex: 1, // Take up remaining space

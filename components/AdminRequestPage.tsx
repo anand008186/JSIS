@@ -1,39 +1,70 @@
-import React from 'react';
-import { ScrollView, Text, View, Button, StyleSheet } from 'react-native';
+import React, { useEffect } from 'react';
+import { ScrollView, Text, View, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { AppContext, AppContextProps } from '@/context/AppContext';
+import { handleApproveReject } from '@/api/firebaseApi';
+import { Ionicons } from '@expo/vector-icons'; // Import for the back icon
+import { useRouter } from 'expo-router';
 
-interface AdminRequestPageProps {
-  forms: { field1: string; field2: string; status?: string }[];
-  handleApproveReject: (index: number, action: string) => void;
-}
+export default function AdminRequestPage() {
+  const router = useRouter();
+  const { adminRequests, fetchAdminRequests } = React.useContext(AppContext) as AppContextProps;
 
-export default function AdminRequestPage({ forms, handleApproveReject }: AdminRequestPageProps) {
+  useEffect(() => {
+    fetchAdminRequests();
+  }, []);
+
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>Admin Permit Requests</Text>
-      {forms.map((form, index) => (
-        <View key={index} style={styles.formItem}>
-          <Text>{`Form ${index + 1}`}</Text>
-          <Text>{form.field1}</Text>
-          <Text>{form.field2}</Text>
-          {/* Display more fields as needed */}
-          <Button title="Approve" onPress={() => handleApproveReject(index, 'Approved')} />
-          <Button title="Reject" onPress={() => handleApproveReject(index, 'Rejected')} />
-        </View>
-      ))}
-    </ScrollView>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.dismiss(1)}>
+          <Ionicons name="arrow-back" size={24} color="black" />
+        </TouchableOpacity>
+        <Text style={styles.title}>Permit Requests</Text>
+      </View>
+      <ScrollView style={styles.content}>
+        {adminRequests.filter((form) => form.status === 'pending').map((form, index) => {
+          console.log(form);
+          const createdAtDate = form.createdAt.toDate(); // Convert Firestore Timestamp to Date
+          const formattedDate = createdAtDate.toLocaleDateString(); // Format the date as needed
+
+          return (
+            <View key={index} style={styles.formItem}>
+              <Text>{`Form ${index + 1}`}</Text>
+              <Text>{form.userEmail}</Text>
+              <Text>{formattedDate}</Text>
+              {/* Display more fields as needed */}
+              <Button title="Approve" onPress={() => handleApproveReject(form.id, 'Approved')} />
+              <Button title="Reject" onPress={() => handleApproveReject(form.id, 'Rejected')} />
+            </View>
+          );
+        })}
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    backgroundColor: '#f5f5f5',
+    marginTop: 32,
+    backgroundColor: '#E0F7FA',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
   },
   title: {
+    paddingLeft: 16,
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 16,
+  },
+  content: {
+    flex: 1,
+    padding: 16,
   },
   formItem: {
     padding: 16,

@@ -1,8 +1,14 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Import for the logout icon
-
+import { AppContext,AppContextProps } from '@/context/AppContext';
+import {  useRouter } from 'expo-router';
+import { truncateEmail } from '@/utils/helpFunc';
 export default function EmployeeHomePage() {
+  const router = useRouter();
+
+  const { logout,currentUser } = React.useContext(AppContext) as AppContextProps;
+
   const handleLogout = () => {
     Alert.alert(
       "Confirm Logout",
@@ -13,11 +19,15 @@ export default function EmployeeHomePage() {
           onPress: () => console.log("Logout cancelled"),
           style: "cancel"
         },
-        { text: "Logout", onPress: () => console.log("Logout") }
+        { text: "Logout", onPress:  async() => {
+          await logout();
+          router.push("/(auth)")
+        } }
       ],
       { cancelable: false }
     );
   };
+
 
   return (
     <View style={styles.container}>
@@ -26,16 +36,16 @@ export default function EmployeeHomePage() {
           source={{ uri: 'https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png' }} // Replace with actual profile picture URL
           style={styles.profilePic}
         />
-        <Text style={styles.title}>Employee Home</Text>
+        <Text style={styles.title}>Welcome {truncateEmail(currentUser?.email ?? "")}</Text>
         <TouchableOpacity onPress={handleLogout}>
           <Ionicons name="log-out-outline" size={24} color="black" />
         </TouchableOpacity>
       </View>
       <View style={styles.content}>
-        <TouchableOpacity style={styles.button} >
+        <TouchableOpacity style={styles.button} onPress={()=> router.navigate("/(employee)/RaisePermit")} >
           <Text style={styles.buttonText}>Raise a Permit</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} >
+        <TouchableOpacity style={styles.button} onPress={()=> router.navigate("/(employee)/history")} >
           <Text style={styles.buttonText}>History</Text>
         </TouchableOpacity>
       </View>

@@ -8,7 +8,7 @@ import EmployeeHomePage from '@/components/EmployeeHomePage';
 
 export default function App() {
 
-  const {currentUser,fetchUserRole, role} = useContext(AppContext) as AppContextProps;
+  const {currentUser,fetchUserRole, role,fetchAdminRequests} = useContext(AppContext) as AppContextProps;
 
   useEffect(() => {
     fetchUserRole();
